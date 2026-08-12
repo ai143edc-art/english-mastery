@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>English Mastery — Personal Tutor</title>
+<style>
+  :root{
+    --bg:#0f1120; --bg2:#161a34; --card:#1c2140; --card2:#232a52;
+    --line:#2e376a; --txt:#eef1ff; --muted:#9aa3d4; --muted2:#6f78b0;
+    --brand:#6c8bff; --brand2:#8a6bff; --teal:#37e0c8; --green:#3ddc84;
+    --amber:#ffcb57; --red:#ff6b7a; --pink:#ff7bc1;
+    --grad:linear-gradient(135deg,#6c8bff,#8a6bff 55%,#b06bff);
+    --grad2:linear-gradient(135deg,#37e0c8,#6c8bff);
+    --shadow:0 12px 40px rgba(0,0,0,.45);
+    --r:18px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:radial-gradient(1200px 700px at 15% -10%,#20264f 0%,transparent 55%),
+               radial-gradient(1000px 600px at 110% 10%,#2a1f4d 0%,transparent 50%),
+               var(--bg);
+    color:var(--txt); min-height:100vh; -webkit-font-smoothing:antialiased;
+    padding-bottom:88px;
+  }
+  a{color:inherit}
+  .wrap{max-width:920px;margin:0 auto;padding:16px 16px 20px}
+  /* ---------- Top bar ---------- */
+  .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:6px 2px 18px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:44px;height:44px;border-radius:13px;background:var(--grad);display:grid;place-items:center;
+        font-weight:800;font-size:20px;box-shadow:0 8px 24px rgba(120,110,255,.45)}
+  .brand h1{font-size:18px;margin:0;letter-spacing:.2px}
+  .brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+  .stats{display:flex;gap:8px}
+  .pill{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;
+        display:flex;align-items:center;gap:7px;font-weight:700;font-size:14px}
+  .pill small{color:var(--muted);font-weight:600;font-size:11px;display:block;margin-top:-2px}
+  .pill .ic{font-size:16px}
+  /* ---------- Cards ---------- */
+  .card{background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
+        border-radius:var(--r);padding:18px;box-shadow:var(--shadow);margin-bottom:16px}
+  .card h2{margin:0 0 4px;font-size:17px}
+  .card .sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+  .section-title{display:flex;align-items:center;justify-content:space-between;margin:4px 2px 12px}
+  .section-title h2{font-size:15px;margin:0;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;font-weight:700}
+  /* ---------- Hero / daily ---------- */
+  .hero{position:relative;overflow:hidden}
+  .hero .glow{position:absolute;inset:-40% -10% auto auto;width:60%;height:220%;
+        background:radial-gradient(circle,rgba(138,107,255,.35),transparent 60%);pointer-events:none}
+  .hero h2{font-size:20px}
+  .lvlbar{height:10px;border-radius:20px;background:#2a3160;overflow:hidden;margin:12px 0 6px}
+  .lvlbar > i{display:block;height:100%;background:var(--grad);border-radius:20px;transition:width .6s}
+  .lvlmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+  /* ---------- Daily quest list ---------- */
+  .quests{display:grid;gap:10px;margin-top:14px}
+  .quest{display:flex;align-items:center;gap:13px;background:var(--card2);border:1px solid var(--line);
+        border-radius:14px;padding:12px 14px;cursor:pointer;transition:.15s;text-align:left}
+  .quest:hover{border-color:var(--brand);transform:translateY(-1px)}
+  .quest .qi{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;font-size:20px;flex:0 0 auto}
+  .quest b{font-size:14.5px} .quest span{display:block;color:var(--muted);font-size:12px;margin-top:1px}
+  .quest .chk{margin-left:auto;width:26px;height:26px;border-radius:50%;border:2px solid var(--muted2);flex:0 0 auto}
+  .quest.done .chk{background:var(--green);border-color:var(--green);position:relative}
+  .quest.done .chk:after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;color:#06210f;font-weight:900;font-size:15px}
+  .quest.done b{color:var(--muted);text-decoration:line-through}
+  /* ---------- Nav ---------- */
+  .nav{position:fixed;left:0;right:0;bottom:0;background:rgba(16,18,32,.86);backdrop-filter:blur(14px);
+       border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 6px 10px;z-index:50}
+  .nav button{background:none;border:none;color:var(--muted2);display:flex;flex-direction:column;align-items:center;
+       gap:3px;font-size:10.5px;font-weight:700;cursor:pointer;padding:5px 10px;border-radius:12px;flex:1;max-width:110px}
+  .nav button .ic{font-size:21px;line-height:1}
+  .nav button.active{color:var(--txt)}
+  .nav button.active .ic{filter:drop-shadow(0 4px 10px rgba(120,120,255,.6))}
+  .nav button.active{background:linear-gradient(180deg,rgba(108,139,255,.16),transparent)}
+  /* ---------- Buttons ---------- */
+  .btn{background:var(--grad);color:#fff;border:none;border-radius:13px;padding:13px 18px;font-weight:800;
+       font-size:15px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;justify-content:center;
+       box-shadow:0 8px 22px rgba(120,110,255,.35);transition:.15s}
+  .btn:active{transform:scale(.97)}
+  .btn.block{width:100%}
+  .btn.ghost{background:var(--card2);border:1px solid var(--line);box-shadow:none;color:var(--txt)}
+  .btn.teal{background:var(--grad2);color:#06231f;box-shadow:0 8px 22px rgba(55,224,200,.3)}
+  .btn.sm{padding:9px 14px;font-size:13px;border-radius:11px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  /* ---------- Lesson / module list ---------- */
+  .unit{margin-bottom:10px}
+  .unit-head{display:flex;align-items:center;gap:12px;padding:6px 2px 10px}
+  .unit-head .n{width:30px;height:30px;border-radius:9px;background:var(--grad);display:grid;place-items:center;font-weight:800;font-size:14px}
+  .unit-head b{font-size:14px}.unit-head span{color:var(--muted);font-size:12px}
+  .lessons{display:grid;gap:9px}
+  .lrow{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:13px;
+        padding:12px 14px;cursor:pointer;transition:.15s}
+  .lrow:hover{border-color:var(--brand)}
+  .lrow .li{width:38px;height:38px;border-radius:10px;background:var(--card2);display:grid;place-items:center;font-size:18px;flex:0 0 auto}
+  .lrow b{font-size:14px}.lrow span{display:block;color:var(--muted);font-size:12px;margin-top:1px}
+  .lrow .st{margin-left:auto;font-size:12px;font-weight:800;color:var(--muted2)}
+  .lrow.done .li{background:var(--green);color:#06210f}
+  .lrow.done .st{color:var(--green)}
+  /* ---------- Flashcard ---------- */
+  .fc{perspective:1400px;margin:8px 0 16px}
+  .fc-inner{position:relative;height:300px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+  .fc.flip .fc-inner{transform:rotateY(180deg)}
+  .fc-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:20px;display:grid;place-content:center;
+           text-align:center;padding:24px;border:1px solid var(--line)}
+  .fc-front{background:linear-gradient(160deg,#232a52,#171b36)}
+  .fc-back{background:var(--grad);transform:rotateY(180deg);color:#fff}
+  .fc-word{font-size:36px;font-weight:800;margin-bottom:6px}
+  .fc-sub{color:var(--muted);font-size:14px}
+  .fc-hi{font-size:34px;font-weight:800}
+  .fc-ex{margin-top:14px;font-size:14px;opacity:.92;font-style:italic}
+  .fc-tap{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:11px;color:var(--muted2)}
+  .fc-back .fc-tap{color:rgba(255,255,255,.7)}
+  /* ---------- Speaking ---------- */
+  .mic{width:96px;height:96px;border-radius:50%;background:var(--grad);border:none;display:grid;place-items:center;
+       font-size:40px;cursor:pointer;margin:8px auto;box-shadow:0 10px 30px rgba(120,110,255,.5);transition:.2s}
+  .mic.rec{background:var(--grad2);animation:pulse 1.2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(55,224,200,.5)}70%{box-shadow:0 0 0 22px rgba(55,224,200,0)}100%{box-shadow:0 0 0 0 rgba(55,224,200,0)}}
+  .target{font-size:24px;font-weight:800;text-align:center;margin:6px 0}
+  .heard{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:12px;min-height:48px;font-size:15px}
+  .score{font-size:44px;font-weight:900;text-align:center}
+  .wgood{color:var(--green)} .wbad{color:var(--red)}
+  /* ---------- Writing ---------- */
+  textarea{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:13px;color:var(--txt);
+           padding:13px;font-size:15px;font-family:inherit;resize:vertical;min-height:120px}
+  textarea:focus{outline:none;border-color:var(--brand)}
+  /* ---------- misc ---------- */
+  .speak-ic{cursor:pointer;color:var(--teal);font-size:18px;vertical-align:middle;user-select:none}
+  .hi{color:var(--teal);font-weight:700}
+  .tag{display:inline-block;background:var(--card2);border:1px solid var(--line);border-radius:20px;padding:3px 11px;
+       font-size:11.5px;color:var(--muted);font-weight:700;margin:0 6px 6px 0}
+  .lesson-body{font-size:15.5px;line-height:1.75}
+  .lesson-body p{margin:0 0 12px}
+  .example{background:var(--card2);border-left:3px solid var(--teal);border-radius:0 12px 12px 0;padding:11px 14px;margin:10px 0}
+  .example .en{font-weight:700;font-size:16px}
+  .example .hi{color:var(--muted);font-size:13.5px;margin-top:2px;display:block;-webkit-text-fill-color:var(--muted)}
+  .reading-word{cursor:pointer;border-radius:4px;padding:0 1px;transition:.1s}
+  .reading-word:hover,.reading-word.on{background:var(--brand);color:#fff}
+  .pop{position:fixed;left:50%;transform:translateX(-50%);bottom:104px;background:var(--card);border:1px solid var(--brand);
+       border-radius:12px;padding:9px 14px;font-size:14px;box-shadow:var(--shadow);z-index:60;display:none}
+  .center{text-align:center}
+  .back{background:none;border:none;color:var(--muted);font-size:14px;font-weight:700;cursor:pointer;padding:6px 0;margin-bottom:6px;display:inline-flex;align-items:center;gap:6px}
+  .quiz-opt{display:block;width:100%;text-align:left;background:var(--card2);border:1px solid var(--line);border-radius:12px;
+            padding:13px 15px;margin-bottom:9px;color:var(--txt);font-size:15px;font-weight:600;cursor:pointer;transition:.15s}
+  .quiz-opt:hover{border-color:var(--brand)}
+  .quiz-opt.correct{background:rgba(61,220,132,.16);border-color:var(--green)}
+  .quiz-opt.wrong{background:rgba(255,107,122,.16);border-color:var(--red)}
+  .toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%) translateY(20px);background:var(--grad);
+         color:#fff;padding:12px 20px;border-radius:14px;font-weight:800;box-shadow:var(--shadow);opacity:0;transition:.3s;z-index:80;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:520px){.grid2{grid-template-columns:1fr}.brand p{display:none}.stats .pill small{display:none}}
+  .miniprog{display:flex;gap:6px;margin-top:8px}
+  .miniprog i{height:6px;flex:1;border-radius:6px;background:#2a3160}
+  .miniprog i.on{background:var(--teal)}
+  .empty{color:var(--muted);text-align:center;padding:30px 10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <div class="logo">E</div>
+      <div><h1>English Mastery</h1><p id="greet">Chalo aaj English seekhte hai 🚀</p></div>
+    </div>
+    <div class="stats">
+      <div class="pill"><span class="ic">🔥</span><div><span id="streak">0</span><small>streak</small></div></div>
+      <div class="pill"><span class="ic">⭐</span><div><span id="xp">0</span><small>XP</small></div></div>
+    </div>
+  </div>
+  <div id="view"></div>
+</div>
+
+<nav class="nav">
+  <button data-nav="home"><span class="ic">🏠</span>Home</button>
+  <button data-nav="learn"><span class="ic">📚</span>Course</button>
+  <button data-nav="words"><span class="ic">🃏</span>Words</button>
+  <button data-nav="read"><span class="ic">📖</span>Read</button>
+  <button data-nav="write"><span class="ic">✍️</span>Write</button>
+  <button data-nav="speak"><span class="ic">🎤</span>Speak</button>
+</nav>
+
+<div class="pop" id="pop"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   ENGLISH MASTERY — personal self-learning app (single file)
+   Data + logic below. Progress saved in localStorage.
+   ============================================================ */
+
+/* ---------- CONTENT: Course (Basic level) ---------- */
+const COURSE = [
+ {u:"Unit 1", t:"Pehle Kadam — Greetings & You", lessons:[
+   {id:"l1", icon:"👋", t:"Greetings (Namaste bolna)", tag:"Basic",
+    body:[
+     {p:"English mein milne par kya bolte hai — ye roz kaam aata hai. Har line ke saath 🔊 dabao aur repeat karo."},
+     {ex:["Hello!","Namaste / Hello"]},
+     {ex:["Good morning.","Subah ka abhivadan (subah)"]},
+     {ex:["Good afternoon.","Dopahar ka abhivadan"]},
+     {ex:["Good evening.","Shaam ka abhivadan"]},
+     {ex:["How are you?","Aap kaise ho?"]},
+     {ex:["I am fine, thank you.","Main theek hoon, dhanyavaad."]},
+     {ex:["Nice to meet you.","Aapse milkar khushi hui."]},
+     {ex:["See you later.","Baad mein milte hai."]},
+    ],
+    quiz:[{q:"'Aapse milkar khushi hui' ka English kya hai?",o:["See you later","Nice to meet you","Good night"],a:1}]},
+   {id:"l2", icon:"🧍", t:"I, You, He, She (Pronouns)", tag:"Grammar",
+    body:[
+     {p:"Pronoun = naam ke jagah use hone wala shabd. Ye English ki neev hai."},
+     {ex:["I — main","Main ek ladka hoon → I am a boy."]},
+     {ex:["You — tum / aap","Tum acche ho → You are good."]},
+     {ex:["He — wo (ladka)","Wo padhta hai → He reads."]},
+     {ex:["She — wo (ladki)","Wo gaati hai → She sings."]},
+     {ex:["It — ye/wo (cheez)","Ye bada hai → It is big."]},
+     {ex:["We — hum","Hum dost hai → We are friends."]},
+     {ex:["They — wo log","Wo log aaye → They came."]},
+    ],
+    quiz:[{q:"'Wo (ladki) gaati hai' — kaunsa pronoun?",o:["He","She","They"],a:1},
+          {q:"'Hum dost hai' = ?",o:["We are friends","You are friends","They are friends"],a:0}]},
+   {id:"l3", icon:"🔤", t:"am / is / are (To be)", tag:"Grammar",
+    body:[
+     {p:"'hoon / hai / ho' ke liye English mein am, is, are. Yaad rakhne ka rule:"},
+     {ex:["I am","I am a technician. (Main technician hoon)"]},
+     {ex:["He / She / It is","She is my sister. (Wo meri behen hai)"]},
+     {ex:["You / We / They are","They are here. (Wo log yahan hai)"]},
+     {p:"Rule: I ke saath <b>am</b>, ek insaan/cheez ke saath <b>is</b>, bahut ya you/we/they ke saath <b>are</b>."},
+    ],
+    quiz:[{q:"He ___ my friend.",o:["am","is","are"],a:1},
+          {q:"We ___ ready.",o:["is","am","are"],a:2}]},
+ ]},
+ {u:"Unit 2", t:"Roz ki cheezein — Numbers, Days, Family", lessons:[
+   {id:"l4", icon:"🔢", t:"Numbers 1–20", tag:"Vocab",
+    body:[
+     {p:"Ginti English mein — bol bol ke yaad karo (🔊)."},
+     {ex:["one, two, three, four, five","1,2,3,4,5"]},
+     {ex:["six, seven, eight, nine, ten","6,7,8,9,10"]},
+     {ex:["eleven, twelve, thirteen, fourteen, fifteen","11–15"]},
+     {ex:["sixteen, seventeen, eighteen, nineteen, twenty","16–20"]},
+    ],
+    quiz:[{q:"'Fifteen' kitna hota hai?",o:["5","50","15"],a:2}]},
+   {id:"l5", icon:"📅", t:"Days & Time words", tag:"Vocab",
+    body:[
+     {ex:["Monday, Tuesday, Wednesday","Somvar, Mangalvar, Budhvar"]},
+     {ex:["Thursday, Friday","Guruvar, Shukravar"]},
+     {ex:["Saturday, Sunday","Shanivar, Ravivar"]},
+     {ex:["today / yesterday / tomorrow","aaj / kal (beeta) / kal (aane wala)"]},
+     {ex:["now / later / soon","abhi / baad mein / jaldi"]},
+    ],
+    quiz:[{q:"'Tomorrow' ka matlab?",o:["Aaj","Kal (aane wala)","Kal (beeta)"],a:1}]},
+   {id:"l6", icon:"👨‍👩‍👧", t:"Family words", tag:"Vocab",
+    body:[
+     {ex:["mother / father","maa / pita"]},
+     {ex:["brother / sister","bhai / behen"]},
+     {ex:["son / daughter","beta / beti"]},
+     {ex:["wife / husband","patni / pati"]},
+     {ex:["friend","dost"]},
+    ],
+    quiz:[{q:"'Daughter' = ?",o:["Beta","Behen","Beti"],a:2}]},
+ ]},
+ {u:"Unit 3", t:"Chhote Vaakya banao — Sentences", lessons:[
+   {id:"l7", icon:"🧩", t:"Sentence ka rule (SVO)", tag:"Grammar",
+    body:[
+     {p:"English vaakya = <b>Subject + Verb + Object</b>. (Kaun + Kaam + Kispe)"},
+     {ex:["I eat rice.","Main chawal khata hoon. (I=kaun, eat=kaam, rice=kya)"]},
+     {ex:["She reads a book.","Wo kitab padhti hai."]},
+     {ex:["We play cricket.","Hum cricket khelte hai."]},
+     {p:"Hindi mein verb last mein aata hai, English mein beech mein. Yahi sabse bada difference hai."},
+    ],
+    quiz:[{q:"Sahi English order?",o:["Rice I eat","I eat rice","Eat I rice"],a:1}]},
+   {id:"l8", icon:"❓", t:"Sawaal poochhna (Questions)", tag:"Grammar",
+    body:[
+     {ex:["What is your name?","Tumhara naam kya hai?"]},
+     {ex:["Where do you live?","Tum kaha rehte ho?"]},
+     {ex:["What do you do?","Tum kya kaam karte ho?"]},
+     {ex:["Do you like tea?","Kya tumhe chai pasand hai?"]},
+     {ex:["Can you help me?","Kya tum meri madad kar sakte ho?"]},
+    ],
+    quiz:[{q:"'Tum kaha rehte ho?' = ?",o:["What is your name?","Where do you live?","Can you help me?"],a:1}]},
+   {id:"l9", icon:"🕐", t:"Present Tense (roz ke kaam)", tag:"Grammar",
+    body:[
+     {p:"Jo kaam roz hota hai uske liye present tense. He/She/It ke saath verb mein <b>-s</b> lagta hai."},
+     {ex:["I work every day.","Main roz kaam karta hoon."]},
+     {ex:["He works in a shop.","Wo dukaan mein kaam karta hai. (work+s)"]},
+     {ex:["They go to school.","Wo log school jaate hai."]},
+     {ex:["She goes to market.","Wo bazaar jaati hai. (go→goes)"]},
+    ],
+    quiz:[{q:"He ___ (play) cricket.",o:["play","plays","playing"],a:1}]},
+ ]},
+];
+
+/* ---------- CONTENT: Vocabulary (SRS) ---------- */
+const WORDS = [
+ ["water","paani","I drink water."],["food","khana","The food is hot."],
+ ["house","ghar","My house is big."],["work","kaam","I go to work."],
+ ["money","paisa","I need money."],["time","samay","What is the time?"],
+ ["shop","dukaan","He has a shop."],["phone","phone","My phone is new."],
+ ["road","sadak","The road is long."],["market","bazaar","Let's go to the market."],
+ ["happy","khush","I am happy today."],["sad","dukhi","She is sad."],
+ ["big","bada","It is a big city."],["small","chhota","A small dog."],
+ ["good","accha","This is good."],["bad","kharab","Bad weather."],
+ ["hot","garam","Hot tea."],["cold","thanda","Cold water."],
+ ["new","naya","A new car."],["old","purana","An old book."],
+ ["fast","tez","A fast train."],["slow","dheere","Drive slow."],
+ ["open","kholna / khula","Open the door."],["close","band karna","Close the window."],
+ ["come","aana","Come here."],["go","jaana","Go home."],
+ ["eat","khana","Eat your food."],["drink","peena","Drink water."],
+ ["read","padhna","Read this book."],["write","likhna","Write your name."],
+ ["speak","bolna","Speak slowly."],["listen","sunna","Listen to me."],
+ ["want","chahna","I want tea."],["need","zaroorat","I need help."],
+ ["give","dena","Give me the pen."],["take","lena","Take this."],
+ ["buy","kharidna","I want to buy a phone."],["sell","bechna","He sells fruit."],
+ ["today","aaj","I am busy today."],["tomorrow","kal","See you tomorrow."],
+];
+
+/* ---------- CONTENT: Reading passages ---------- */
+const READINGS = [
+ {t:"My Day", lvl:"Very Easy",
+  text:"I wake up early. I drink tea. I go to my shop. I fix phones. I like my work. In the evening, I come home. I eat food with my family. Then I sleep.",
+  hi:{"wake":"jaagna","early":"jaldi","drink":"peena","shop":"dukaan","fix":"theek karna","like":"pasand","work":"kaam","evening":"shaam","come":"aana","eat":"khana","family":"parivaar","sleep":"sona","tea":"chai","home":"ghar"}},
+ {t:"At the Market", lvl:"Easy",
+  text:"I go to the market. I want to buy fruit. The apples are red and fresh. I ask the price. It is fifty rupees. I buy two apples. The man gives me a bag. I say thank you and go home.",
+  hi:{"market":"bazaar","want":"chahna","buy":"kharidna","fruit":"phal","apples":"seb","red":"laal","fresh":"taaza","ask":"poochhna","price":"daam","fifty":"pachaas","rupees":"rupaye","gives":"deta hai","bag":"thaila","home":"ghar"}},
+ {t:"My Friend", lvl:"Easy",
+  text:"His name is Raju. He is my good friend. He lives near my house. We go to work together. He is kind and helpful. On Sunday, we play cricket. I am happy to have a friend like him.",
+  hi:{"name":"naam","good":"accha","friend":"dost","lives":"rehta hai","near":"paas","house":"ghar","work":"kaam","together":"saath","kind":"dayaalu","helpful":"madadgaar","play":"khelna","happy":"khush"}},
+];
+
+/* ---------- CONTENT: Writing prompts ---------- */
+const PROMPTS = [
+ {t:"Apne baare mein", q:"Write 2 lines about yourself. (Apna naam aur kaam batao)",
+  hint:"Example: My name is ___. I am a phone technician. I live in ___.",
+  keys:["my name","i am","i live","i work"]},
+ {t:"Aaj ka din", q:"Write about your day today. (Aaj kya kiya?)",
+  hint:"Example: Today I woke up early. I went to my shop. I fixed three phones.",
+  keys:["today","i","went","did"]},
+ {t:"Apna dost", q:"Write 2 lines about your best friend.",
+  hint:"Example: My friend's name is ___. He is kind. We play cricket.",
+  keys:["friend","he","she","is"]},
+ {t:"Kal ka plan", q:"What will you do tomorrow? (Kal kya karoge?)",
+  hint:"Example: Tomorrow I will go to the market. I will buy a new phone.",
+  keys:["tomorrow","will","i"]},
+];
+
+/* ---------- CONTENT: Speaking phrases ---------- */
+const SPEAK = [
+ "Hello, how are you?","My name is Vikku.","I am fine, thank you.",
+ "I am a phone technician.","Nice to meet you.","Where do you live?",
+ "I want to buy a phone.","Please help me.","What is the time?",
+ "See you tomorrow.","Thank you very much.","Have a good day.",
+];
+
+/* =========================================================
+   STATE
+   ========================================================= */
+const KEY="englishMastery.v1";
+const todayStr=()=>new Date().toISOString().slice(0,10);
+let S=load();
+function load(){
+  try{const s=JSON.parse(localStorage.getItem(KEY));if(s)return s;}catch(e){}
+  return {xp:0,streak:0,lastDay:null,doneLessons:{},quests:{},questDay:null,
+          srs:{}, wordIdx:0, speakIdx:0, readIdx:0};
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(S));}
+
+function newDayCheck(){
+  const t=todayStr();
+  if(S.questDay!==t){S.quests={};S.questDay=t;}
+  if(S.lastDay!==t){
+    const y=new Date(Date.now()-864e5).toISOString().slice(0,10);
+    if(S.lastDay===y)S.streak=(S.streak||0)+1; else if(S.lastDay!==t)S.streak=1;
+    S.lastDay=t; save();
+  }
+}
+function addXP(n){S.xp=(S.xp||0)+n;save();renderStats();toast("+"+n+" XP ⭐");}
+function renderStats(){
+  document.getElementById("xp").textContent=S.xp||0;
+  document.getElementById("streak").textContent=S.streak||0;
+}
+
+/* =========================================================
+   SPEECH (browser built-in)
+   ========================================================= */
+let VOICE=null;
+function pickVoice(){
+  const vs=speechSynthesis.getVoices();
+  VOICE=vs.find(v=>/en-GB/i.test(v.lang)&&/female|zira|hazel|google uk english female/i.test(v.name))
+       ||vs.find(v=>/en-US/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||vs[0];
+}
+if('speechSynthesis' in window){speechSynthesis.onvoiceschanged=pickVoice;setTimeout(pickVoice,300);}
+function say(text,rate){
+  if(!('speechSynthesis'in window))return toast("Is browser mein awaaz nahi chalti");
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang="en-US";u.rate=rate||.9;if(VOICE)u.voice=VOICE;
+  speechSynthesis.speak(u);
+}
+window.say=say;
+
+/* =========================================================
+   ROUTER
+   ========================================================= */
+let sub=null; // sub-view state
+function go(v){route=v;sub=null;draw();window.scrollTo(0,0);
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.nav===v));}
+let route="home";
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.nav));
+
+function draw(){
+  newDayCheck();renderStats();
+  const el=document.getElementById("view");
+  el.innerHTML =
+    route==="home"?viewHome():
+    route==="learn"?(sub?viewLesson(sub):viewLearn()):
+    route==="words"?viewWords():
+    route==="read"?(sub!=null?viewReading(sub):viewReadList()):
+    route==="write"?viewWrite():
+    route==="speak"?viewSpeak():viewHome();
+  bind();
+}
+
+/* =========================================================
+   VIEWS
+   ========================================================= */
+function totalLessons(){return COURSE.reduce((a,u)=>a+u.lessons.length,0);}
+function doneCount(){return Object.keys(S.doneLessons).length;}
+function levelInfo(){
+  const done=doneCount(),tot=totalLessons();
+  const pct=Math.round(done/tot*100);
+  const lvl=1+Math.floor((S.xp||0)/100);
+  return {done,tot,pct,lvl,xpInLvl:(S.xp||0)%100};
+}
+
+function viewHome(){
+  const li=levelInfo();
+  const q=[
+    {id:"lesson",icon:"📚",c:"#6c8bff22",t:"1 Lesson padho",s:"Course aage badhao",nav:"learn"},
+    {id:"words",icon:"🃏",c:"#37e0c822",t:"5 naye words",s:"Flashcards practice",nav:"words"},
+    {id:"read",icon:"📖",c:"#ffcb5722",t:"1 Reading padho",s:"Samajh badhao",nav:"read"},
+    {id:"speak",icon:"🎤",c:"#ff7bc122",t:"3 lines bolo",s:"Speaking practice",nav:"speak"},
+    {id:"write",icon:"✍️",c:"#b06bff22",t:"2 lines likho",s:"Writing practice",nav:"write"},
+  ];
+  const doneQ=q.filter(x=>S.quests[x.id]).length;
+  return `
+  <div class="card hero">
+    <div class="glow"></div>
+    <div class="tag">Level ${li.lvl} • Basic</div>
+    <h2>Aaj ka mission 🎯</h2>
+    <p class="sub" style="margin-bottom:6px">${doneQ}/5 poora — thoda aur, streak bachao 🔥</p>
+    <div class="lvlbar"><i style="width:${doneQ/5*100}%"></i></div>
+    <div class="lvlmeta"><span>Daily goal</span><span>${doneQ}/5</span></div>
+    <div class="quests">
+      ${q.map(x=>`<button class="quest ${S.quests[x.id]?'done':''}" data-quest="${x.nav}">
+        <div class="qi" style="background:${x.c}">${x.icon}</div>
+        <div><b>${x.t}</b><span>${x.s}</span></div><div class="chk"></div></button>`).join("")}
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card" style="margin:0"><h2>📈 Course progress</h2>
+      <p class="sub">${li.done}/${li.tot} lessons complete</p>
+      <div class="lvlbar"><i style="width:${li.pct}%"></i></div>
+      <div class="lvlmeta"><span>${li.pct}% done</span><span>Level ${li.lvl}</span></div>
+    </div>
+    <div class="card" style="margin:0"><h2>💡 Aaj ka tip</h2>
+      <p class="sub" style="margin:0">${TIPS[new Date().getDate()%TIPS.length]}</p>
+    </div>
+  </div>
+  <div class="card center">
+    <h2>Ready? Chalo shuru karein</h2>
+    <p class="sub">Structured course + free practice — dono roz thoda thoda.</p>
+    <button class="btn block" data-quest="learn">📚 Continue Course</button>
+  </div>`;
+}
+const TIPS=[
+ "Roz sirf 15 min — lekin daily. Consistency hi asli teacher hai.",
+ "Naye word ko zor se bolo aur ek sentence banao — tabhi yaad rehta hai.",
+ "Galti karne se mat daro. Galti = seekhne ka rasta.",
+ "Jo padho, use aaine ke saamne bolo. Speaking se confidence aata hai.",
+ "Har cheez ka Hindi matlab dhoondhne ki jagah, tasveer socho.",
+ "Din mein 3 baar English mein soch ke dekho — 'I am hungry', 'It is hot'.",
+ "Reading se vocabulary, speaking se fluency — dono roz karo.",
+];
+
+function viewLearn(){
+  return `<div class="section-title"><h2>📚 Course — Basic</h2><span class="tag">${doneCount()}/${totalLessons()} done</span></div>`+
+   COURSE.map((u,ui)=>`
+    <div class="unit">
+      <div class="unit-head"><div class="n">${ui+1}</div><div><b>${u.t}</b><span>${u.u}</span></div></div>
+      <div class="lessons">
+        ${u.lessons.map(l=>{const d=S.doneLessons[l.id];return `
+          <div class="lrow ${d?'done':''}" data-lesson="${l.id}">
+            <div class="li">${d?'✓':l.icon}</div>
+            <div><b>${l.t}</b><span class="tag" style="margin:0">${l.tag}</span></div>
+            <div class="st">${d?'DONE':'START →'}</div>
+          </div>`}).join("")}
+      </div>
+    </div>`).join("");
+}
+
+function findLesson(id){for(const u of COURSE)for(const l of u.lessons)if(l.id===id)return l;}
+function viewLesson(id){
+  const l=findLesson(id);if(!l)return viewLearn();
+  const body=l.body.map(b=>{
+    if(b.p)return `<p>${b.p}</p>`;
+    if(b.ex)return `<div class="example"><div class="en">${b.ex[0]} <span class="speak-ic" data-say="${esc(b.ex[0])}">🔊</span></div><span class="hi">${b.ex[1]}</span></div>`;
+    return "";
+  }).join("");
+  const quiz=(l.quiz||[]).map((q,i)=>`
+    <div class="card" style="margin:12px 0 0" data-quiz="${i}">
+      <b>Quiz ${i+1}:</b> <span>${q.q}</span>
+      <div style="margin-top:10px">
+        ${q.o.map((o,oi)=>`<button class="quiz-opt" data-qi="${i}" data-oi="${oi}" data-ans="${q.a}">${o}</button>`).join("")}
+      </div>
+    </div>`).join("");
+  return `
+    <button class="back" data-back="learn">← Course</button>
+    <div class="card">
+      <div class="tag">${l.tag}</div>
+      <h2>${l.icon} ${l.t}</h2>
+      <div class="lesson-body">${body}</div>
+    </div>
+    ${quiz}
+    <button class="btn block" data-complete="${l.id}" style="margin-top:6px">✓ Lesson complete (+20 XP)</button>`;
+}
+
+function viewWords(){
+  const w=WORDS[S.wordIdx%WORDS.length];
+  const seen=Object.keys(S.srs).length;
+  return `
+    <div class="section-title"><h2>🃏 Vocabulary</h2><span class="tag">${seen}/${WORDS.length} seekhe</span></div>
+    <div class="card center">
+      <p class="sub">Card ko tap karke palto. Word ${S.wordIdx%WORDS.length+1} / ${WORDS.length}</p>
+      <div class="fc" id="fc">
+        <div class="fc-inner">
+          <div class="fc-face fc-front">
+            <div>
+              <div class="fc-word">${w[0]}</div>
+              <div class="fc-sub">Kya matlab hai? (tap to flip)</div>
+              <div style="margin-top:14px"><span class="speak-ic" data-say="${esc(w[0])}" style="font-size:26px">🔊</span></div>
+            </div>
+          </div>
+          <div class="fc-face fc-back">
+            <div>
+              <div class="fc-hi">${w[1]}</div>
+              <div class="fc-ex">"${w[2]}"</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="justify-content:center">
+        <button class="btn ghost sm" data-word="again">🔁 Yaad nahi</button>
+        <button class="btn teal sm" data-word="know">✓ Aa gaya</button>
+      </div>
+      <div style="margin-top:12px"><span class="speak-ic" data-say="${esc(w[2])}">🔊 Sentence suno</span></div>
+    </div>`;
+}
+
+function viewReadList(){
+  return `<div class="section-title"><h2>📖 Reading</h2></div>`+
+   READINGS.map((r,i)=>`
+    <div class="lrow" data-read="${i}">
+      <div class="li">📄</div>
+      <div><b>${r.t}</b><span>${r.lvl} • ${r.text.split(' ').length} words</span></div>
+      <div class="st">READ →</div>
+    </div>`).join("")+
+   `<p class="sub center" style="margin-top:14px">Kisi bhi <span class="hi">word</span> pe tap karo — Hindi matlab dikhega 👆</p>`;
+}
+function viewReading(i){
+  const r=READINGS[i];
+  const words=r.text.split(/(\s+)/).map(tok=>{
+    if(/^\s+$/.test(tok))return tok;
+    const clean=tok.toLowerCase().replace(/[^a-z]/g,"");
+    const hi=r.hi[clean];
+    return `<span class="reading-word" data-rw="${clean}" data-hi="${hi?esc(hi):''}">${tok}</span>`;
+  }).join("");
+  return `
+    <button class="back" data-back="read">← Reading list</button>
+    <div class="card">
+      <div class="tag">${r.lvl}</div>
+      <h2>${r.t} <span class="speak-ic" data-say="${esc(r.text)}">🔊</span></h2>
+      <p class="sub">Tap any word for meaning. 🔊 se puri story suno.</p>
+      <div class="lesson-body" style="font-size:17px;line-height:2">${words}</div>
+    </div>
+    <button class="btn block" data-readdone="${i}">✓ Padh liya (+15 XP)</button>`;
+}
+
+function viewWrite(){
+  const p=PROMPTS[Math.floor(Math.random()*PROMPTS.length)];
+  return `
+    <div class="section-title"><h2>✍️ Writing Practice</h2></div>
+    <div class="card">
+      <div class="tag">${p.t}</div>
+      <h2>${p.q}</h2>
+      <p class="sub example" style="border-color:var(--amber)"><b>Hint:</b> ${p.hint}</p>
+      <textarea id="wr" placeholder="Yaha English mein likho..."></textarea>
+      <div class="row" style="margin-top:12px">
+        <button class="btn" data-check='${esc(JSON.stringify(p.keys))}'>✓ Check my writing</button>
+        <button class="btn ghost" data-newprompt="1">🔄 Naya topic</button>
+      </div>
+      <div id="wfeed"></div>
+    </div>
+    <div class="card">
+      <h2>💡 Writing kaise sudhre?</h2>
+      <p class="sub" style="margin:0">Chhote vaakya likho. Har vaakya mein Subject + Verb + Object rakho.
+      Roz 2 line likhne ki aadat daalo — yahi asli jaadu hai.</p>
+    </div>`;
+}
+
+function viewSpeak(){
+  const t=SPEAK[S.speakIdx%SPEAK.length];
+  const supported = ('webkitSpeechRecognition'in window)||('SpeechRecognition'in window);
+  return `
+    <div class="section-title"><h2>🎤 Speaking Practice</h2><span class="tag">${S.speakIdx%SPEAK.length+1}/${SPEAK.length}</span></div>
+    <div class="card center">
+      <p class="sub">Pehle 🔊 suno, phir mic dabao aur bolo.</p>
+      <div class="target">${t} <span class="speak-ic" data-say="${esc(t)}">🔊</span></div>
+      <button class="mic" id="mic">🎤</button>
+      <p class="sub" id="micHint">${supported?'Mic dabao aur clearly bolo':'⚠️ Ye browser speech nahi sunta — Chrome use karo'}</p>
+      <div class="heard" id="heard" style="display:none"></div>
+      <div id="speakScore"></div>
+      <div class="row" style="justify-content:center;margin-top:14px">
+        <button class="btn ghost sm" data-speak="prev">← Pichhla</button>
+        <button class="btn teal sm" data-speak="next">Agla →</button>
+      </div>
+    </div>
+    <div class="card"><h2>🗣️ Tip</h2><p class="sub" style="margin:0">Dheere aur saaf bolo. Ek line ko 3 baar bolo — pehli baar sun ke, phir dekh ke, phir bina dekhe.</p></div>`;
+}
+
+/* =========================================================
+   EVENT BINDING
+   ========================================================= */
+function esc(s){return String(s).replace(/"/g,"&quot;").replace(/'/g,"&#39;");}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),1600);}
+
+function bind(){
+  // speak icons
+  document.querySelectorAll('[data-say]').forEach(e=>e.onclick=ev=>{ev.stopPropagation();say(e.dataset.say);});
+  // home quests
+  document.querySelectorAll('[data-quest]').forEach(e=>e.onclick=()=>go(e.dataset.quest));
+  // lesson open
+  document.querySelectorAll('[data-lesson]').forEach(e=>e.onclick=()=>{sub=e.dataset.lesson;route="learn";draw();window.scrollTo(0,0);});
+  document.querySelectorAll('[data-back]').forEach(e=>e.onclick=()=>{sub=null;go(e.dataset.back);});
+  // lesson complete
+  const c=document.querySelector('[data-complete]');
+  if(c)c.onclick=()=>{const id=c.dataset.complete;if(!S.doneLessons[id]){S.doneLessons[id]=1;addXP(20);}
+    S.quests.lesson=1;save();markQuestToast();sub=null;go("learn");};
+  // quiz
+  document.querySelectorAll('.quiz-opt').forEach(b=>b.onclick=()=>{
+    const ans=+b.dataset.ans,oi=+b.dataset.oi,qi=b.dataset.qi;
+    const opts=document.querySelectorAll(`.quiz-opt[data-qi="${qi}"]`);
+    opts.forEach(o=>o.style.pointerEvents="none");
+    if(oi===ans){b.classList.add("correct");addXP(5);}
+    else{b.classList.add("wrong");opts[ans].classList.add("correct");}
+  });
+  // words flashcard
+  const fc=document.getElementById("fc");
+  if(fc)fc.onclick=()=>fc.classList.toggle("flip");
+  document.querySelectorAll('[data-word]').forEach(e=>e.onclick=ev=>{ev.stopPropagation();
+    const w=WORDS[S.wordIdx%WORDS.length];
+    S.srs[w[0]]=(e.dataset.word==="know")?(S.srs[w[0]]||0)+1:1;
+    if(e.dataset.word==="know")addXP(5);
+    S.wordIdx=(S.wordIdx+1);S.quests.words=1;save();markQuestToast();draw();window.scrollTo(0,0);});
+  // reading
+  document.querySelectorAll('[data-read]').forEach(e=>e.onclick=()=>{sub=+e.dataset.read;draw();window.scrollTo(0,0);});
+  document.querySelectorAll('[data-rw]').forEach(e=>e.onclick=()=>{
+    document.querySelectorAll('.reading-word.on').forEach(x=>x.classList.remove('on'));
+    e.classList.add('on');
+    const hi=e.dataset.hi||"(matlab yaad karo / dictionary)";
+    showPop(e.textContent.trim()+" = "+hi);say(e.dataset.rw);});
+  const rd=document.querySelector('[data-readdone]');
+  if(rd)rd.onclick=()=>{addXP(15);S.quests.read=1;save();markQuestToast();sub=null;go("read");};
+  // writing
+  const chk=document.querySelector('[data-check]');
+  if(chk)chk.onclick=()=>checkWriting(JSON.parse(chk.dataset.check));
+  const np=document.querySelector('[data-newprompt]');if(np)np.onclick=()=>draw();
+  // speaking
+  document.querySelectorAll('[data-speak]').forEach(e=>e.onclick=()=>{
+    S.speakIdx=(S.speakIdx+(e.dataset.speak==="next"?1:SPEAK.length-1));save();draw();window.scrollTo(0,0);});
+  const mic=document.getElementById("mic");if(mic)mic.onclick=startSpeak;
+}
+
+function markQuestToast(){
+  const done=["lesson","words","read","speak","write"].filter(k=>S.quests[k]).length;
+  if(done===5)setTimeout(()=>toast("🎉 Aaj ke saare mission poore! Streak safe 🔥"),700);
+}
+
+/* ---------- pop for reading ---------- */
+let popT;
+function showPop(t){const p=document.getElementById("pop");p.textContent=t;p.style.display="block";
+  clearTimeout(popT);popT=setTimeout(()=>p.style.display="none",2200);}
+
+/* ---------- writing check ---------- */
+function checkWriting(keys){
+  const val=(document.getElementById("wr").value||"").trim();
+  const feed=document.getElementById("wfeed");
+  if(val.length<4){feed.innerHTML=`<div class="example" style="border-color:var(--red)"><b>Kuchh to likho 🙂</b></div>`;return;}
+  const words=val.split(/\s+/).length;
+  const lower=" "+val.toLowerCase()+" ";
+  const hit=keys.filter(k=>lower.includes(k));
+  const cap=/^[A-Z]/.test(val), dot=/[.!?]\s*$/.test(val.trim());
+  let tips=[];
+  if(!cap)tips.push("Sentence ko <b>capital letter</b> se shuru karo.");
+  if(!dot)tips.push("Vaakya ke ant mein <b>full stop (.)</b> lagao.");
+  if(words<4)tips.push("Thoda aur likho — kam se kam ek pura vaakya.");
+  const good=hit.length>=1&&words>=4&&cap&&dot;
+  if(good)addXP(15),S.quests.write=1,save(),markQuestToast();
+  feed.innerHTML=`
+    <div class="example" style="border-color:${good?'var(--green)':'var(--amber)'};margin-top:14px">
+      <b>${good?'🎉 Shaandaar! Bilkul sahi tarah likha.':'👍 Achhi koshish! Thoda sudhaar:'}</b>
+      <div style="margin-top:8px;font-size:14px;color:var(--muted)">
+        📝 ${words} words • ${hit.length} sahi keyword mile<br>
+        ${tips.length?tips.map(t=>"• "+t).join("<br>"):"• Sab theek hai. Ab isko zor se bolo 🔊"}
+      </div>
+      <button class="btn teal sm" style="margin-top:10px" onclick="say(document.getElementById('wr').value)">🔊 Apna likha suno</button>
+    </div>`;
+}
+
+/* ---------- speaking recognition ---------- */
+let recog=null,recActive=false;
+function normalize(s){return s.toLowerCase().replace(/[^a-z0-9\s]/g,"").replace(/\s+/g," ").trim();}
+function startSpeak(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){toast("Ye browser mic nahi sunta — Chrome use karo");return;}
+  const mic=document.getElementById("mic");
+  if(recActive){recog&&recog.stop();return;}
+  recog=new SR();recog.lang="en-US";recog.interimResults=false;recog.maxAlternatives=3;
+  recActive=true;mic.classList.add("rec");mic.textContent="⏹";
+  document.getElementById("micHint").textContent="Sun raha hoon... bolo!";
+  recog.onresult=e=>{
+    let best="";for(let i=0;i<e.results[0].length;i++){best=e.results[0][i].transcript;
+      if(normalize(best)===normalize(SPEAK[S.speakIdx%SPEAK.length]))break;}
+    scoreSpeak(best);
+  };
+  recog.onerror=()=>{document.getElementById("micHint").textContent="Sunai nahi diya, dobara try karo";};
+  recog.onend=()=>{recActive=false;mic.classList.remove("rec");mic.textContent="🎤";};
+  recog.start();
+}
+function scoreSpeak(heard){
+  const target=SPEAK[S.speakIdx%SPEAK.length];
+  const tw=normalize(target).split(" "),hw=normalize(heard).split(" ");
+  let match=0;const used=[...hw];
+  tw.forEach(w=>{const idx=used.indexOf(w);if(idx>-1){match++;used.splice(idx,1);}});
+  const pct=Math.round(match/tw.length*100);
+  const hd=document.getElementById("heard");hd.style.display="block";
+  hd.innerHTML=`<span style="color:var(--muted);font-size:12px">Tumne bola:</span><br>"${heard}"`;
+  const sc=document.getElementById("speakScore");
+  const cls=pct>=80?"wgood":pct>=50?"":"wbad";
+  sc.innerHTML=`<div class="score ${cls}">${pct}%</div>
+    <p class="sub" style="margin-top:-4px">${pct>=80?'🎉 Perfect! Bahut badhiya bola.':pct>=50?'👍 Achha! Thoda aur saaf bolo.':'🔁 Dobara suno aur try karo.'}</p>`;
+  if(pct>=80){addXP(10);S.quests.speak=1;save();markQuestToast();}
+}
+
+/* ---------- greeting by time ---------- */
+(function(){const h=new Date().getHours();const g=document.getElementById("greet");
+  g.textContent=h<12?"Good morning! ☀️ Chalo English seekhein":h<17?"Good afternoon! 📚 Practice time":"Good evening! 🌙 Aaj ka practice";})();
+
+/* ---------- start ---------- */
+go("home");
+</script>
+</body>
+</html>
